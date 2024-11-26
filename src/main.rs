@@ -59,3 +59,39 @@ const HEAP_SIZE: usize = 1024 * 1024;
 
 static mut HEAP: [u8; HEAP_SIZE] = [0; HEAP_SIZE];
 
+
+#[global_allocator]
+static GLOBAL_ALLOCATOR: BumpAllocator = unsafe {
+    BumpAllocator::new(HEAP.as_ptr() as usize, HEAP_SIZE)
+};
+
+
+
+pub fn allocate_example() {
+    // Import necessary types from the `alloc` crate.
+    use alloc::vec::Vec;
+    use alloc::boxed::Box;
+    use alloc::string::String;
+
+
+    let mut numbers = Vec::new(); // Creates a new empty Vec
+
+    numbers.push(1);
+    numbers.push(2);
+    numbers.push(3);
+
+    let boxed_value = Box::new(42);
+    let greeting = String::from("Hello, world!");
+    let boxed_array = Box::new([10, 20, 30, 40, 50]);
+
+    #[derive(Debug)]
+    struct Node {
+        value: u32,
+        next: Option<Box<Node>>,
+    }
+
+    let node3 = Box::new(Node { value: 3, next: None });
+    let node2 = Box::new(Node { value: 2, next: Some(node3) });
+    let node1 = Box::new(Node { value: 1, next: Some(node2) });
+
+}
