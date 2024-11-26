@@ -4,7 +4,7 @@ extern crate alloc;
 #[cfg(feature = "global_alloc")]
 use core::alloc::{GlobalAlloc, Layout};
 
-
+#[link_section = ".heap"] 
 
 
 
@@ -55,4 +55,7 @@ unsafe impl GlobalAlloc for BumpAllocator {
     }
 }
 
+const HEAP_SIZE: usize = 1024 * 1024; 
+
+static mut HEAP: [u8; HEAP_SIZE] = [0; HEAP_SIZE];
 
