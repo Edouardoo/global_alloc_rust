@@ -17,6 +17,13 @@ pub struct BumpAllocator {
 }
 
 impl BumpAllocator {
+
+    /// Creates a new `BumpAllocator`.
+    ///
+    /// # Safety
+    ///
+    /// The caller must ensure that the memory region from `heap_start` to `heap_end`
+    /// is valid and not used by anyone else.
     pub const unsafe fn new(heap_start: usize, heap_size: usize) -> Self {
         BumpAllocator {
             heap_start,
@@ -25,6 +32,11 @@ impl BumpAllocator {
         }
     }
 
+    /// Allocates a memory block.
+    ///
+    /// # Safety
+    ///
+    /// This function is unsafe because it does not check for heap overflows or alignment issues
     unsafe fn alloc(&mut self, layout: Layout) -> *mut u8 {
         let alloc_start = align_up(self.next, layout.align());
         let alloc_end = alloc_start + layout.size();
@@ -52,6 +64,7 @@ unsafe impl GlobalAlloc for BumpAllocator {
     }
 
     unsafe fn dealloc(&self, _ptr: *mut u8, _layout: Layout) {
+        // Bump allocator doesn't support deallocation
     }
 }
 
